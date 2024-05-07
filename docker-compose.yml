@@ -15,6 +15,10 @@ services:
       - database
     networks:
       - bearpass
+    build:
+      context: ./app/
+      additional_contexts:
+        composer_conf: ../app/
 
   nginx:
     image: bearpass/nginx

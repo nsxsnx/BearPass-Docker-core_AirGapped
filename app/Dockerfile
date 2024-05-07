@@ -18,11 +18,8 @@ RUN apt-get update && apt-get install -y \
     unzip \
     git \
     libldap2-dev \
-    curl
-
-
-# Clear cache
-RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+    curl && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
 
 RUN docker-php-ext-configure gd --enable-gd --with-freetype --with-jpeg && \
     docker-php-ext-install \
@@ -42,6 +39,11 @@ COPY --from=composer /usr/bin/composer /usr/bin/composer
 
 COPY conf/php/php-fpm.conf $PHP_INI_DIR/php-fpm.conf
 COPY conf/php/php.ini $PHP_INI_DIR/php.ini
+
+COPY --from=composer_conf composer.json composer.lock /var/www/bearpass_deps/
+WORKDIR /var/www/bearpass_deps/
+RUN composer install --no-dev --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+
 COPY init.sh /usr/bin/init
 
 RUN chmod +x /usr/bin/init
