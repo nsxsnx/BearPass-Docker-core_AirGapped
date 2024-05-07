@@ -24,10 +24,9 @@ useradd -o -u $LUID -g $GROUPNAME -s /bin/false $USERNAME >/dev/null 2>&1 ||
 usermod -o -u $LUID -g $GROUPNAME -s /bin/false $USERNAME >/dev/null 2>&1
 mkhomedir_helper $USERNAME
 
-vendor_dir=/var/www/bearpass_deps/vendor/
+vendor_dir=/var/www/bearpass/vendor/
 echo "Moving pre-installed vendor dependencies to app directory..."
-test -d "$vendor_dir" && mv -f "$vendor_dir" /var/www/bearpass/vendor/
-
+test ! -d "$vendor_dir" && mv -f /var/www/bearpass_deps/vendor/ "$vendor_dir" 
 echo "Updating autoload..."
 cd /var/www/bearpass/ && \
 composer dump-autoload
